@@ -1,0 +1,19 @@
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+//var mongooseUniqueValidator = require('mongoose-unique-validator');
+
+var toolsSchema = new Schema({
+    saasPlatforms: [{type: String, required: true}],
+    configManagementTools: [{type: String, required: false}],
+    cicdTools: [{type: String, required: false}],
+    logManagementTools: [{type: String, required: false}],
+    repositoryManagementTools: [{type: String, required: false}],
+    monitoringTools: [{type: String, required: false}]    
+},
+{
+    capped: { size: 1024, max: 1 } 
+}
+);
+
+//schema.plugin(mongooseUniqueValidator);
+module.exports = mongoose.model('toolslistcollection', toolsSchema);

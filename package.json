@@ -1,0 +1,21 @@
+{
+  "name": "opsera-app-server",
+  "version": "1.0.0",
+  "description": "Application server for opsera portal",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "Opsera",
+    "Server",
+    "Portal"
+  ],
+  "author": "Aniz M Nizar",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^5.0.0-rc0",
+    "restify": "^6.3.4"
+  }
+}
