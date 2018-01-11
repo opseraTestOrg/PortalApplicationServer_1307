@@ -1,6 +1,6 @@
-var customerToolsController = require('../controllers/customertoolscontroller.js');
+var custAppAccountsController = require('../controllers/customerappaccountscontroller.js');
 
-function createCustomerToolsSelection(req, res, next) {
+function createCustomerAppAccount(req, res, next) {
     var jsonBody = req.body;
 
     /*
@@ -11,7 +11,7 @@ function createCustomerToolsSelection(req, res, next) {
     }
     */
     
-    customerToolsController.createCustomerToolsSelection(jsonBody, function(result, error) {
+    custAppAccountsController.createCustomerAppAccount(jsonBody, function(result, error) {
         if (error) {
             res.send(400, { success: false, error: error });
             next();
@@ -21,11 +21,14 @@ function createCustomerToolsSelection(req, res, next) {
             next();
         }
     })
+    
 
+    //console.log(jsonBody);
+    //res.send(201, { success: true, data: "ok" });
 }
 
-function getCustomerToolsSelection(req, res, next) {
-   
+function getCustomerAppAccount(req, res, next) {
+   // var jsonBody = req.body;
 
     /*
     if (!Application.verifyParameters(params, ["date", "users"])) {
@@ -33,12 +36,9 @@ function getCustomerToolsSelection(req, res, next) {
         next();
         return;
     }
-    */
-
-    var custid = req.params.id;
-    console.log(custid);
-    
-    customerToolsController.getCustomerToolsSelection(custid, function(result, error) {       
+    */    
+    var id = req.params.id;
+    custAppAccountsController.getCustomerAppAccount(id, function(result, error) {       
         if (error) {
             res.send(400, { success: false, error: error });
             next();
@@ -48,12 +48,15 @@ function getCustomerToolsSelection(req, res, next) {
             next();
         }
     })
-        
+    
+
+    //console.log(jsonBody);
+    //res.send(201, { success: true, data: "ok" });
 }
 
 function setupEndpoints(server) {    
-    server.post({ path: '/customertools', version: "1.0.0" }, createCustomerToolsSelection);
-    server.get ({ path: '/customertools/:id', version: "1.0.0" }, getCustomerToolsSelection);
+    server.post({ path: '/customerappaccount', version: "1.0.0" }, createCustomerAppAccount);
+    server.get ({ path: '/customerappaccount/:id', version: "1.0.0" }, getCustomerAppAccount);
 }
 
 exports.setupEndpoints = setupEndpoints;
