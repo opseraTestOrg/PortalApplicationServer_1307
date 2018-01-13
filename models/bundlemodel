@@ -1,0 +1,14 @@
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var bundleComboSchema = new Schema({
+    toolCategory: {type: String, required: true},
+    toolName: {type: String, required: true}
+}, {_id: false});
+
+var bundleSchema = new Schema({
+    bundleName: {type: String, required: true, unique : true},
+    bundleTools: [bundleComboSchema]
+});
+
+module.exports = mongoose.model('bundlecollection', bundleSchema);
