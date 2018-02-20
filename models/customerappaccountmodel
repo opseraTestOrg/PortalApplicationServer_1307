@@ -1,40 +1,57 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var bcrypt = require('bcrypt');
 
 var customerToolsSchema = new Schema({
-    toolCategory: {type: String, required: true},
-    toolName: {type: String, required: true}
+    toolCategory: {type: String },
+    toolName: {type: String }
 },{ _id : false });
 
 var userToolSchema = new Schema({
-    userToolName: {type: String, required: true},
-    userToolAccountStatus: {type: String, required: true}
+    userToolName: {type: String },
+    userToolAccountStatus: {type: String }
 },{ _id : false });
 
 var customerUsersSchema = new Schema({
-    userFirstName: {type: String, required: true},
-    userLastName: {type: String, required: true},
-    userEmailId: {type: String, required: true}, 
-    userLoginId: {type: String, required: false},
-    userLoginPassword: {type: String, required: false},
-    userPermissionType: {type: String, required: true},
-    userToolsToBeConfigured: [userToolSchema]
+    firstName: {type: String },
+    lastName: {type: String },
+    emailId: {type: String }, 
+    loginId: {type: String, required: false},
+    loginPassword: {type: String, required: false},
+    permissionType: {type: String },
+    toolsToBeConfigured: [userToolSchema]
 },{ _id : false });
 
 var customerSchema = new Schema({
-    customerUniqueAppId: {type: String, required: true},
-    customerBundleType: {type: String, required: true},
-    customerOrganizationName: {type: String, required: true},
-    customerAddress: {type: String, required: true},    
-    customerPrimaryContactEmail: {type: String, required: true},    
-    customerPrimaryContactPhone: {type: String, required: true},
-    customerSecondaryContactEmail: {type: String, required: true},    
-    customerSecondaryContactPhone: {type: String, required: true},
-    customerApplicationUrl: {type: String, required: true},
-    customerApplicationPortNo: {type: String, required: true},
-    customerApplicationTechnologyStack:  [{type: String, required: true}],
-    customerToolsSelection: [customerToolsSchema],
+    uniqueAppId: {type: String },
+    bundleType: {type: String },
+    organizationName: {type: String },
+    address: {type: String },   
+    zip: {type: String },
+    state: {type: String } ,
+    primaryContactEmail: {type: String },    
+    primaryContactPhone: {type: String },
+    secondaryContactEmail: {type: String },    
+    secondaryContactPhone: {type: String },
+    applicationUrl: {type: String },
+    applicationPortNo: {type: String },
+    applicationTechnologyStack:  [{type: String }],
+    toolsSelection: [customerToolsSchema],
     customerUsers: [customerUsersSchema]
 });
+
+customerSchema.methods.generateHash = function(password){
+     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+}
+
+customerSchema.methods.validatePassword = function(password){
+    return bcrypt.compareSync(password, this.customerUsers[0].loginPassword);
+}
+
+customerSchema.methods.toJSON = function() {
+    var obj = this.toObject()
+    delete obj.customerUsers[0];
+    return obj
+};
 
 module.exports = mongoose.model('customerappaccountcollection', customerSchema);

@@ -54,9 +54,24 @@ function getCustomerAppAccount(req, res, next) {
     //res.send(201, { success: true, data: "ok" });
 }
 
+function installBundleForCustomer(req,res,next){
+  
+    custAppAccountsController.installBundleForCustomer(req.params,function(result, error){
+        if (error) {
+            res.send(400, { success: false, error: error });
+            next();
+        }
+        else {            
+            res.send(201, { success: true, data: result });
+            next();
+        }
+    })
+}
+
 function setupEndpoints(server) {    
     server.post({ path: '/customerappaccount', version: "1.0.0" }, createCustomerAppAccount);
     server.get ({ path: '/customerappaccount/:id', version: "1.0.0" }, getCustomerAppAccount);
+    server.post({path:'/installBundle/:customerId/:bundleName',version:"1.0.0"}, installBundleForCustomer);``
 }
 
 exports.setupEndpoints = setupEndpoints;
