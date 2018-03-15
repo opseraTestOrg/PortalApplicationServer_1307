@@ -27,7 +27,7 @@ function createCustomerAppAccount(params, callback) {
             }            
             callback(result, err);            
         });
-}
+};
 
 function getCustomerAppAccount(appid, callback) {
     customerAppAccount.find({customerUniqueAppId: appid}, function(err, result) {
@@ -37,26 +37,28 @@ function getCustomerAppAccount(appid, callback) {
         }
         callback(result, err);
     });
-}
+};
 
-function installBundleForCustomer(params, callback){
-    var customerId = params.customerId;
-    var packageName = params.bundleName;
+function installBundleForCustomer(body, callback){
+    var customerId = body.customerId;
+    var packageName = body.bundleName;
 
-   console.log(customerId +" ---- "+packageName)
+    console.log(customerId +" ---- "+packageName)
 
-Request.post({
-    "headers": { "content-type": "application/json" },
-    "url": "http://localhost:9091/api/customer/activatePackage/"+customerId+"/"+packageName
-}, (error, response, body) => {
-   
-    if(error) {
-        console.log("Error occured...!!!")
-        return console.dir(error);
-    }
-    console.dir(body);
-});
-}
+    Request.post({
+        "headers": { "content-type": "application/json" },
+        "url": "http://localhost:9091/api/customer/activatePackage/"+customerId+"/"+packageName,
+       
+    }, (error, response, body) => {
+    
+        if(error) {
+            console.log("Error occured...!!!");
+            callback(body, error);
+        }
+        console.dir(body);
+        callback(body, error);
+    });
+};
 
 exports.getCustomerAppAccount = getCustomerAppAccount;
 exports.createCustomerAppAccount = createCustomerAppAccount;

@@ -56,7 +56,7 @@ function getCustomerAppAccount(req, res, next) {
 
 function installBundleForCustomer(req,res,next){
   
-    custAppAccountsController.installBundleForCustomer(req.params,function(result, error){
+    custAppAccountsController.installBundleForCustomer(req.body,function(result, error){
         if (error) {
             res.send(400, { success: false, error: error });
             next();
