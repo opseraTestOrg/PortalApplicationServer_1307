@@ -2,30 +2,39 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
 
-var customerToolsSchema = new Schema({
-    toolCategory: {type: String },
-    toolName: {type: String }
-},{ _id : false });
 
 var userToolSchema = new Schema({
     userToolName: {type: String },
     userToolAccountStatus: {type: String }
 },{ _id : false });
 
-var customerUsersSchema = new Schema({
+var toolConfiguration = new Schema({
+    configurationName : String,
+    configurationValue : String
+},{_id : false });
+
+var toolsSchema = new Schema({
+    toolName : String,
+    exposedPort : String,
+    toolContainerId: String,
+    toolsConfigurationList : [mongoose.Schema.Types.Mixed]
+},{_id : false});
+
+var applicationSchema = new Schema({
+    applicationId : String,
+    applicationName :String,
+    isEncryptionEnabled : Boolean,
+    baseUrl : String,
+    instanceId :String,
+    bundleName : String,
+    toolsList : [mongoose.Schema.Types.Mixed],
+    keyPairValue : String,
+},{_id : false});
+
+var customerDetails = new Schema({
     firstName: {type: String },
     lastName: {type: String },
-    emailId: {type: String }, 
-    loginId: {type: String, required: false},
-    loginPassword: {type: String, required: false},
-    permissionType: {type: String },
-    toolsToBeConfigured: [userToolSchema]
-},{ _id : false });
-
-var customerSchema = new Schema({
-    uniqueAppId: {type: String },
-    bundleType: {type: String },
-    organizationName: {type: String },
+    emailId: {type: String },     
     address: {type: String },   
     zip: {type: String },
     state: {type: String } ,
@@ -33,11 +42,15 @@ var customerSchema = new Schema({
     primaryContactPhone: {type: String },
     secondaryContactEmail: {type: String },    
     secondaryContactPhone: {type: String },
-    applicationUrl: {type: String },
-    applicationPortNo: {type: String },
-    applicationTechnologyStack:  [{type: String }],
-    toolsSelection: [customerToolsSchema],
-    customerUsers: [customerUsersSchema]
+},{ _id : false });
+
+var customerSchema = new Schema({
+    customerUniqueId : {type: String },
+    customerDetails : customerDetails,
+    loginId: {type: String, required: false},
+    loginPassword: {type: String, required: false},
+    organizationName: {type: String },
+    applications : [applicationSchema]
 });
 
 customerSchema.methods.generateHash = function(password){
@@ -45,12 +58,13 @@ customerSchema.methods.generateHash = function(password){
 }
 
 customerSchema.methods.validatePassword = function(password){
-    return bcrypt.compareSync(password, this.customerUsers[0].loginPassword);
+    return bcrypt.compareSync(password, this.loginPassword);
 }
 
 customerSchema.methods.toJSON = function() {
     var obj = this.toObject()
-    delete obj.customerUsers[0];
+    delete obj.customerDetails;
+    delete obj.loginPassword;
     return obj
 };
 

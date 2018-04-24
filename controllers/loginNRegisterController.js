@@ -5,24 +5,27 @@ const uuidv4 = require('uuid/v4');
 function registerCustomer (jsonBody, callback){
 
 console.log("Registering.....")
-    var customerPersonalObject = new Object({
+    var customerDetails = new Object({
         firstName: jsonBody.firstName,
         lastName: jsonBody.lastName,
-        emailId: jsonBody.emailId, 
-        loginId: jsonBody.emailId
-    });
-    var customerObject = new customerAppAccount({
-        uniqueAppId: uuidv4(),
-        organizationName: jsonBody.organizationName,
+        emailId: jsonBody.emailId,         
         address: jsonBody.address, 
         zip:jsonBody.zip,
         state:jsonBody.state,
         primaryContactEmail: jsonBody.emailId,    
         primaryContactPhone: jsonBody.primaryContactPhone,
         secondaryContactPhone: jsonBody.secondaryContactPhone,
-        customerUsers: customerPersonalObject
     });
-    customerObject.customerUsers[0].loginPassword=customerObject.generateHash(jsonBody.loginPassword);
+    
+    var customerObject = new customerAppAccount({ 
+        customerUniqueId: uuidv4(),
+        organizationName: jsonBody.organizationName,
+        loginId: jsonBody.emailId
+        
+    });
+    customerObject.loginPassword=customerObject.generateHash(jsonBody.loginPassword);
+    customerObject.customerDetails = customerDetails;
+   
     customerObject.save(function(err, result) {
         if (err) {                
             callback(result, err);
@@ -34,7 +37,7 @@ console.log("Registering.....")
 
 function login(jsonBody, callback){
     
-    customerAppAccount.findOne({'primaryContactEmail':jsonBody.emailId}, function(err, customer){
+    customerAppAccount.findOne({'loginId':jsonBody.emailId}, function(err, customer){
         if (err) {                
             callback(result, err);
             return err;

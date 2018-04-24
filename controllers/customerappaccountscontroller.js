@@ -40,22 +40,56 @@ function getCustomerAppAccount(appid, callback) {
 };
 
 function installBundleForCustomer(body, callback){
-    var customerId = body.customerId;
-    var packageName = body.bundleName;
-
-    console.log(customerId +" ---- "+packageName)
-
+   // console.log(body.toolsList[0])
+    var toolsList = [];
+    for(var i=0; i<body.toolsList.length;i++){
+        console.log(body.toolsList[i])
+        var object = {
+            toolName : body.toolsList[i].toolName,
+            toolConfigurationList : body.toolsList[i].toolConfigurationList
+        }    
+        toolsList.push(object);
+    }
+    console.log(toolsList)
+    var application = {
+        customerUniqueId : body.customerUniqueId,
+        applicationId : uuidv4(),
+        applicationName :body.bundleName,
+        isEncryptionEnabled : body.isEncryptionEnabled,
+        baseUrl : null,
+        instanceId :null,
+        bundleName : body.bundleName,
+        toolsList : toolsList
+    }
+    customerAppAccount.find({customerUniqueId:body.customerUniqueId}, function(err, result) {
+        if (err) {
+            callback(result, err);
+            return err;
+        }
+        customerAppAccount.findOneAndUpdate({customerUniqueId:body.customerUniqueId}, {$push: {applications: application}},function(err, result){
+            if(err){
+                callback(result, err);
+                return err;
+            }
+        });
+       console.log(result)
+    });
     Request.post({
-        "headers": { "content-type": "application/json" },
-        "url": "http://localhost:9091/api/customer/activatePackage/"+customerId+"/"+packageName,
-       
-    }, (error, response, body) => {
-    
+        headers: { "content-type": "application/json" },
+        url: "http://localhost:9091/api/customer/activatePackage",
+        body:{
+            customerId : body.customerUniqueId,
+            bundleName : body.bundleName,
+            applicationName : body.applicationName,
+            isEncryptionEnabled : body.isEncryptionEnabled,
+            toolList : body.toolsList
+        },
+        json:true
+    }, (error, response, body) => {    
         if(error) {
             console.log("Error occured...!!!");
             callback(body, error);
-        }
-        console.dir(body);
+        }       
         callback(body, error);
     });
 };

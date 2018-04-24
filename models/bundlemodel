@@ -7,7 +7,7 @@ var bundleComboSchema = new Schema({
 }, {_id: false});
 
 var bundleSchema = new Schema({
-    bundleName: {type: String, required: true, unique : true},
+    bundleName: {type: String, required: true, x : true},
     bundleTools: [bundleComboSchema]
 });
 

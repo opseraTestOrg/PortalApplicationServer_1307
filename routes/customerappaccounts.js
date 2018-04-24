@@ -20,11 +20,7 @@ function createCustomerAppAccount(req, res, next) {
             res.send(201, { success: true, data: result });
             next();
         }
-    })
-    
-
-    //console.log(jsonBody);
-    //res.send(201, { success: true, data: "ok" });
+    });
 }
 
 function getCustomerAppAccount(req, res, next) {
@@ -65,13 +61,13 @@ function installBundleForCustomer(req,res,next){
             res.send(201, { success: true, data: result });
             next();
         }
-    })
+    });
 }
 
 function setupEndpoints(server) {    
     server.post({ path: '/customerappaccount', version: "1.0.0" }, createCustomerAppAccount);
     server.get ({ path: '/customerappaccount/:id', version: "1.0.0" }, getCustomerAppAccount);
-    server.post({path:'/installBundle/:customerId/:bundleName',version:"1.0.0"}, installBundleForCustomer);``
+    server.post({path:'/installBundle',version:"1.0.0"}, installBundleForCustomer);``
 }
 
 exports.setupEndpoints = setupEndpoints;

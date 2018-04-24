@@ -2,7 +2,7 @@ var loginNRegisterController =  require('../controllers/loginNRegisterController
 
 
 function registerCustomer(req, res, next){
-    console.log(req.body)
+  
     loginNRegisterController.registerCustomer(req.body, function(result, error){
         if (error) {
             res.send(400, { success: false, error: error });
