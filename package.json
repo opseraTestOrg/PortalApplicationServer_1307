@@ -16,7 +16,9 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^1.0.3",
+    "docker-api": "^0.7.0",
     "mongoose": "^5.0.0-rc0",
+    "nodemailer": "^4.6.4",
     "nodemon": "^1.17.3",
     "request": "^2.83.0",
     "restify": "^6.3.4",

@@ -64,10 +64,18 @@ function installBundleForCustomer(req,res,next){
     });
 }
 
+function testDocker(req, res, next){
+    custAppAccountsController.installDummyBundle(req,function(result, error){
+
+    })
+    
+}
+
 function setupEndpoints(server) {    
     server.post({ path: '/customerappaccount', version: "1.0.0" }, createCustomerAppAccount);
     server.get ({ path: '/customerappaccount/:id', version: "1.0.0" }, getCustomerAppAccount);
-    server.post({path:'/installBundle',version:"1.0.0"}, installBundleForCustomer);``
+    server.post({path:'/installBundle',version:"1.0.0"}, installBundleForCustomer);
+    server.post({path:'/testDocker',version:"1.0.0"}, testDocker);
 }
 
 exports.setupEndpoints = setupEndpoints;
