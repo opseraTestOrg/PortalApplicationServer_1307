@@ -41,7 +41,7 @@ function getCustomerAppAccount(appid, callback) {
     });
 };
 
-function installBundleForCustomer(body, callback){
+function installBundleForCustomer(body, callback){  
    // console.log(body.toolsList[0])
     var toolsList = [];
     var applicationId = uuidv4();
@@ -121,31 +121,31 @@ function installBundleForCustomer(body, callback){
             }
           
             email.sendmail(activationText,"","","",body.primaryContactEmail,"Bundle Activation Request");
-
-            Request.post({
-                headers: { "content-type": "application/json" },
-                url: "http://localhost:9091/api/customer/createNewEC2Instance",
+            callback({'msg':"Activation request Received..!!!"},err);
+            // Request.post({
+            //     headers: { "content-type": "application/json" },
+            //     url: "http://localhost:9091/api/customer/createNewEC2Instance",
                 
-                json:true
-            }, (error, response, instanceId) => {    
-                if(error) {
-                    console.log("Error occured...!!!");
-                    callback(instanceId, error);
-                }
-                console.log("Instance Id is ");
+            //     json:true
+            // }, (error, response, instanceId) => {    
+            //     if(error) {
+            //         console.log("Error occured...!!!");
+            //         callback(instanceId, error);
+            //     }
+            //     console.log("Instance Id is ");
                 
-                console.log(instanceId)       
-                customerAppAccount.findOneAndUpdate({'applications.applicationId':applicationId}, {$set: {'applications.$.instanceId': instanceId}},function(err, result){
-                    if(err){
-                        callback(result, err);
-                        return err;
-                    }
-                  console.log(applicationId);
-                    setTimeout(checkStatus, 240000, instanceId);
+            //     console.log(instanceId)       
+            //     customerAppAccount.findOneAndUpdate({'applications.applicationId':applicationId}, {$set: {'applications.$.instanceId': instanceId}},function(err, result){
+            //         if(err){
+            //             callback(result, err);
+            //             return err;
+            //         }
+            //       console.log(applicationId);
+            //         setTimeout(checkStatus, 240000, instanceId);
                     
-                });  
-               // callback(body, error);
-            });
+            //     });  
+            //    // callback(body, error);
+            // });
         });
        
     // Request.post({
