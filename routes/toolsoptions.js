@@ -20,7 +20,7 @@ function createToolsList(req, res, next) {
             res.send(201, { success: true, data: result });
             next();
         }
-    })
+    });
     
 
     //console.log(jsonBody);

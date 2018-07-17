@@ -63,7 +63,7 @@ customerSchema.methods.validatePassword = function(password){
 
 customerSchema.methods.toJSON = function() {
     var obj = this.toObject()
-    delete obj.customerDetails;
+    
     delete obj.loginPassword;
     return obj
 };
