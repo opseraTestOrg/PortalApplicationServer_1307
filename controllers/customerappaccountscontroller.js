@@ -42,7 +42,7 @@ function getCustomerAppAccount(appid, callback) {
 };
 
 function installBundleForCustomer(body, callback) {
-    // console.log(body.toolsList[0])
+     console.log(body)
     var toolsList = [];
     var applicationId = uuidv4();
     var customerUniqueId = body.customerUniqueId;

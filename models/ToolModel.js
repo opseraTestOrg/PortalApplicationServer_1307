@@ -16,4 +16,4 @@ var toolSchema = new Schema({
        applicationName:{type: String}
 });
 
-module.exports = mongoose.model('customerTools  ', toolSchema);
+module.exports = mongoose.model('customerTools', toolSchema);

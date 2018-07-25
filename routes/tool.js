@@ -25,7 +25,7 @@ function updateDNS(req, res, next){
             res.send(200, { success: true, data: result });
             next();
         }
-     })
+     });
 };
 
 function updateToolCOntainerID(req, res, next){
@@ -35,17 +35,34 @@ function updateToolCOntainerID(req, res, next){
             res.send(400, { success: false, error: error });
             next();
         }
-        else {            
+        else {           
+            console.log("Successfully Updated ..!!!");
+            console.log(result) ;
             res.send(200, { success: true, data: result });
             next();
         }
      })
 };
 
+function updateToolStatus(req, res, next){
+    var jsonBody = req.body;
+    toolController.updateToolStatus(jsonBody, function(result, error){
+        if (error) {
+            res.send(400, { success: false, error: error });
+            next();
+        }
+        else {            
+            res.send(200, { success: true, data: result });
+            next();
+        }
+     })
+}
+
 function setupEndpoints(server) {    
     server.post({ path:'/saveTool', version: "1.0.0" }, saveTool);
     server.post({ path:'/updateDNS', version: "1.0.0"}, updateDNS);
     server.post({ path:'/updateToolContainerId', version: "1.0.0"}, updateToolCOntainerID);     
+    server.post({ path:'/updateToolStatus', verison: "1.0.0"}, updateToolStatus);
 };
 
 exports.setupEndpoints = setupEndpoints;

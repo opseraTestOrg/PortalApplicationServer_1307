@@ -13,7 +13,7 @@ function saveTool (jsonBody, callback){
 
 function updateDNSName (jsonBody, callback){
     var tool = new toolModel();
-    toolModel.findOneAndUpdate({$and:[{customerUniqueId: jsonBody.customerUniqueId},{toolName:jsonBody.toolName},{}]},{$set: { dnsName: jsonBody.dnsName } },function(err, result){
+    toolModel.findOneAndUpdate({$and:[{customerUniqueId: jsonBody.customerUniqueId},{applicationId: jsonBody.applicationId},{toolName:jsonBody.toolName},{}]},{$set: { dnsName: jsonBody.dnsName } },function(err, result){
         if (err) {
             callback(result, err);
             return err;
@@ -26,7 +26,7 @@ function updateDNSName (jsonBody, callback){
 
 function updateToolCOntainerID (jsonBody, callback){
     var tool = new toolModel();
-    toolModel.findOneAndUpdate({$and:[{customerUniqueId: jsonBody.customerUniqueId},{toolName:jsonBody.toolName},{}]},{$set: { toolContainerId: jsonBody.toolContainerId } },function(err, result){
+    toolModel.findOneAndUpdate({$and:[{customerUniqueId: jsonBody.customerUniqueId},{applicationId: jsonBody.applicationId},{toolName:jsonBody.toolName},{}]},{$set: { toolContainerId: jsonBody.toolContainerId } },function(err, result){
         if (err) {
             callback(result, err);
             return err;
@@ -37,6 +37,19 @@ function updateToolCOntainerID (jsonBody, callback){
 
 };
 
+function updateToolStatus ( jsonBody, callback){
+    var tool = new toolModel();
+    toolModel.findOneAndUpdate({$and:[{customerUniqueId: jsonBody.customerUniqueId},{applicationId: jsonBody.applicationId},{toolName:jsonBody.toolName},{}]},{$set: { toolStatus: jsonBody.toolStatus } },function(err, result){
+        if (err) {
+            callback(result, err);
+            return err;
+        }else{
+            callback(result);
+        }
+    });
+};
+
 exports.saveTool = saveTool;
 exports.updateDNSName = updateDNSName;
 exports.updateToolCOntainerID = updateToolCOntainerID;
+exports.updateToolStatus = updateToolStatus;
