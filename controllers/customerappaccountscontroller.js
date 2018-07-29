@@ -41,10 +41,29 @@ function getCustomerAppAccount(appid, callback) {
     });
 };
 
+
+function checkAndCreateApplication(body, callback){
+
+    customerAppAccount.find({$and:[{ customerUniqueId: body.customerUniqueId },{ applications : {$elemMatch : { applicationName : body.applicationName}} }]}, function (err, result) {
+        if (err) {
+            callback(result, err);
+            return err;
+        }
+        console.log(result.length)
+        if(result.length>0){
+            callback({isApplicationExists:true},err);
+        }else{
+
+            callback({applicationId : uuidv4(),customerUniqueId: body.customerUniqueId}, err);
+        }
+       
+    });
+};
+
 function installBundleForCustomer(body, callback) {
      console.log(body)
     var toolsList = [];
-    var applicationId = uuidv4();
+    var applicationId = body.applicationId;
     var customerUniqueId = body.customerUniqueId;
     var applicationName = body.applicationName;
     var activatedURL = "";
@@ -91,18 +110,18 @@ function installBundleForCustomer(body, callback) {
                 applicationName: body.applicationName,
                 customerName :body.customerName
             }
-            Request.post({
-                headers: { "content-type": "application/json" },
-                url: "http://localhost:9091/api/rabbitmq/customerRequestHandler/addToStartInstancesQueue",
-                body: object,
-                json: true
-            }, (error, response, body) => {
-                if (error) {
-                    console.log("Error occured...!!!");
-                    callback(body, error);
-                }
-              //  callback(body, error);
-            });
+            // Request.post({
+            //     headers: { "content-type": "application/json" },
+            //     url: "http://localhost:9091/api/rabbitmq/customerRequestHandler/addToStartInstancesQueue",
+            //     body: object,
+            //     json: true
+            // }, (error, response, body) => {
+            //     if (error) {
+            //         console.log("Error occured...!!!");
+            //         callback(body, error);
+            //     }
+            //   //  callback(body, error);
+            // });
            
         }
         callback({ 'msg': "Activation request Received..!!!" });
@@ -128,3 +147,4 @@ exports.getCustomerAppAccount = getCustomerAppAccount;
 exports.createCustomerAppAccount = createCustomerAppAccount;
 exports.installBundleForCustomer = installBundleForCustomer;
 exports.installDummyBundle = installDummyBundle;
+exports.checkAndCreateApplication = checkAndCreateApplication;

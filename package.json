@@ -15,7 +15,7 @@
   "author": "Aniz M Nizar",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^2.0.0",
     "docker-api": "^0.7.0",
     "mongoose": "^5.0.0-rc0",
     "nodemailer": "^4.6.4",

@@ -38,6 +38,7 @@ console.log("Registering.....")
 function login(jsonBody, callback){
     
     customerAppAccount.findOne({'loginId':jsonBody.emailId}, function(err, customer){
+      
         if (err) {                
             callback(result, err);
             return err;
@@ -59,10 +60,8 @@ function checkUserExistence(params, callback){
         if (err) {                
             callback(result, err);
             return err;
-        } 
-       
-         callback({isUserExists:customer==null?false:true},err)
-        
+        }        
+         callback({isUserExists:customer==null?false:true},err);        
     });
 }
 

@@ -13,7 +13,10 @@ var toolSchema = new Schema({
        customerUniqueId:{type: String},
        applicationId:{type: String},
        customerName:{type: String},
-       applicationName:{type: String}
+       applicationName:{type: String},
+       toolURL:{ type: String},
+       isEncrypted:{type:Boolean},
+       installationType:{type:String,enum:['INSTALL','UPGRADE']} 
 });
 
 module.exports = mongoose.model('customerTools', toolSchema);

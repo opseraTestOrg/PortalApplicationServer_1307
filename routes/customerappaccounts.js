@@ -66,15 +66,43 @@ function installBundleForCustomer(req,res,next){
 
 function testDocker(req, res, next){
     custAppAccountsController.installDummyBundle(req,function(result, error){
-
+        if (error) {
+            res.send(400, { success: false, error: error });
+            next();
+        }
+        else {            
+            res.send(200, { success: true, data: result });
+            next();
+        }
     })
     
-}
+};
+
+function checkAndCreateApplication(req, res, next){
+    custAppAccountsController.checkAndCreateApplication(req.body, function(result, error){
+        if (error) {
+            res.send(400, { success: false, error: error });
+            next();
+        }
+        else {  
+            if(result.isApplicationExists){
+                res.send(500, { success: true, data: result });
+            }          
+            else{
+                res.send(200, { success: true, data: result });
+            }
+           
+            next();
+        }
+    });
+    
+};
 
 function setupEndpoints(server) {    
     server.post({ path: '/customerappaccount', version: "1.0.0" }, createCustomerAppAccount);
     server.get ({ path: '/customerappaccount/:id', version: "1.0.0" }, getCustomerAppAccount);
     server.post({path:'/installBundle',version:"1.0.0"}, installBundleForCustomer);
+    server.post({path:'/checkAndCreateApplication',version:"1.0.0"}, checkAndCreateApplication);
     server.post({path:'/testDocker',version:"1.0.0"}, testDocker);
 }
 

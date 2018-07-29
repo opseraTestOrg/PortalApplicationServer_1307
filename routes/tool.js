@@ -56,7 +56,7 @@ function updateToolStatus(req, res, next){
             next();
         }
      })
-}
+};
 
 function setupEndpoints(server) {    
     server.post({ path:'/saveTool', version: "1.0.0" }, saveTool);
