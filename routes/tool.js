@@ -58,11 +58,25 @@ function updateToolStatus(req, res, next){
      })
 };
 
+function getApplicationsByUser(req, res, next){
+    toolController.getApplicationsByUser(req.body, function(result, error){
+        if (error) {
+            res.send(400, { success: false, error: error });
+            next();
+        }
+        else {            
+            res.send(200, { success: true, data: result });
+            next();
+        }
+    })
+};
+
 function setupEndpoints(server) {    
     server.post({ path:'/saveTool', version: "1.0.0" }, saveTool);
     server.post({ path:'/updateDNS', version: "1.0.0"}, updateDNS);
     server.post({ path:'/updateToolContainerId', version: "1.0.0"}, updateToolCOntainerID);     
     server.post({ path:'/updateToolStatus', verison: "1.0.0"}, updateToolStatus);
+    server.post({ path:'/getApplicationsByUser', version : "1.0.0"}, getApplicationsByUser);
 };
 
 exports.setupEndpoints = setupEndpoints;

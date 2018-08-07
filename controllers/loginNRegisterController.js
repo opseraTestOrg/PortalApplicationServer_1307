@@ -63,7 +63,7 @@ function checkUserExistence(params, callback){
         }        
          callback({isUserExists:customer==null?false:true},err);        
     });
-}
+};
 
 exports.registerCustomer = registerCustomer;
 exports.login= login;

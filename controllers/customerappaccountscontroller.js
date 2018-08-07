@@ -2,6 +2,7 @@ var customerAppAccount = require('../models/customerappaccountmodel');
 const uuidv4 = require('uuid/v4');
 var Request = require("request");
 var email = require('../utilities/email');
+var tooHistoryController = require ('../controllers/CustomerToolHistoryController');
 
 
 function createCustomerAppAccount(params, callback) {
@@ -61,7 +62,10 @@ function checkAndCreateApplication(body, callback){
 };
 
 function installBundleForCustomer(body, callback) {
-     console.log(body)
+    if(body.toolsList.length==0){
+        callback("",{'msg' : 'Tools details missing'})
+    }else{
+     
     var toolsList = [];
     var applicationId = body.applicationId;
     var customerUniqueId = body.customerUniqueId;
@@ -83,6 +87,7 @@ function installBundleForCustomer(body, callback) {
         isEncryptionEnabled: body.isEncryptionEnabled,
         bundleName: body.bundleName,
         toolsList: body.toolsList
+
     };
 
 
@@ -108,43 +113,44 @@ function installBundleForCustomer(body, callback) {
                 toolContainerId:"",
                 bundleToolsSize:body.toolsList.length,
                 applicationName: body.applicationName,
-                customerName :body.customerName
+                customerName :body.customerName,
+                installationDate : Date.now(),
+                installationType : "INSTALL",
+                isEncrypted : body.toolsList[i].isEncrypted,
+                toolURL : body.toolsList[i].toolURL 
             }
-            // Request.post({
-            //     headers: { "content-type": "application/json" },
-            //     url: "http://localhost:9091/api/rabbitmq/customerRequestHandler/addToStartInstancesQueue",
-            //     body: object,
-            //     json: true
-            // }, (error, response, body) => {
-            //     if (error) {
-            //         console.log("Error occured...!!!");
-            //         callback(body, error);
-            //     }
-            //   //  callback(body, error);
-            // });
+            Request.post({
+                headers: { "content-type": "application/json" },
+                url: "http://localhost:9091/api/rabbitmq/customerRequestHandler/addToStartInstancesQueue",
+                body: object,
+                json: true
+            }, (error, response, body) => {
+                if (error) {
+                    console.log("Error occured...!!!");
+                    callback(body, error);
+                }
+              //  callback(body, error);
+            });
            
         }
         callback({ 'msg': "Activation request Received..!!!" });
     });
-
+    }
 };
 
-function installDummyBundle(body, callback) {
-    var docker = require('docker-api')({ socketPath: false, host: 'http://ec2-18-219-89-27.us-east-2.compute.amazonaws.com', port: '4342' });
-    function handler(err, res) {
-        if (err) throw err;
-        console.log("data returned from Docker as JS object: ", res);
-    }
-
-    var options = {}; // all options listed in the REST documentation for Docker are supported.
-
-    console.log(docker.json)
-    docker.containers.list(handler);
-
+function updateTools(body, callback){
+     
+    if(body.toolsList.length==0){
+        callback("",{'msg' : 'Tools details missing'});
+    }else{
+        //save history
+        tooHistoryController.addToolToCustomerHistory(body,callback);        
+        callback({'msg' : 'Tool/s update request for your '+body.applicationName+' application is received'});
+    }   
 };
 
 exports.getCustomerAppAccount = getCustomerAppAccount;
 exports.createCustomerAppAccount = createCustomerAppAccount;
 exports.installBundleForCustomer = installBundleForCustomer;
-exports.installDummyBundle = installDummyBundle;
 exports.checkAndCreateApplication = checkAndCreateApplication;
+exports.updateTools = updateTools;

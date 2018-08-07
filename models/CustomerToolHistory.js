@@ -21,4 +21,4 @@ var toolSchema = new Schema({
        versionNumber : { type : String}
 });
 
-module.exports = mongoose.model('customerTools', toolSchema);
+module.exports = mongoose.model('customerToolsHistory', toolSchema);
