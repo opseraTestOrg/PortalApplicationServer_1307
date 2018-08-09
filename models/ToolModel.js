@@ -18,7 +18,12 @@ var toolSchema = new Schema({
        isEncrypted:{type:Boolean},
        installationType:{type:String,enum:['INSTALL','UPGRADE']} ,
        installationDate : {type:Date},
-       versionNumber : { type : String}
+       versionNumber : { type : String},
+       ldapName : { type : String},
+       ldapPort: { type : String},
+       ldapURL: { type : String},
+       ldapUserId: { type : String},
+       ldapPassword: { type : String}
 });
 
 module.exports = mongoose.model('customerTools', toolSchema);

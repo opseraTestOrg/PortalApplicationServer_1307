@@ -2,6 +2,7 @@
  
 
 function saveTool (jsonBody, callback){
+    console.log("Saving tool");
     var tool = new toolModel(jsonBody);
     tool.save(function(err, result) {
         if (err) {                

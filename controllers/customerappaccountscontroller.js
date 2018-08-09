@@ -3,7 +3,7 @@ const uuidv4 = require('uuid/v4');
 var Request = require("request");
 var email = require('../utilities/email');
 var tooHistoryController = require ('../controllers/CustomerToolHistoryController');
-
+var saveTool = require('./toolController')
 
 function createCustomerAppAccount(params, callback) {
     console.log("inside createCustomerAppAccount");
@@ -87,7 +87,6 @@ function installBundleForCustomer(body, callback) {
         isEncryptionEnabled: body.isEncryptionEnabled,
         bundleName: body.bundleName,
         toolsList: body.toolsList
-
     };
 
 
@@ -100,37 +99,51 @@ function installBundleForCustomer(body, callback) {
       
 
         for (var i = 0; i < body.toolsList.length; i++) {
+            var ldapPasswordInput = (body.toolsList[i].toolConfigurationList[4] != undefined ? body.toolsList[i].toolConfigurationList[4].configurationValue : "")
+                    var object = {
+                        toolName : body.toolsList[i].toolName,
+                        toolConfigurationList : body.toolsList[i].toolConfigurationList,
+                        exposedPort : body.toolsList[i].toolConfigurationList[1].configurationValue,
+                        dnsName:"",
+                        instanceId:"",
+                        toolStatus:"",
+                        customerUniqueId:body.customerUniqueId,
+                        applicationId:applicationId,
+                        toolContainerId:"",
+                        bundleToolsSize:body.toolsList.length,
+                        applicationName: body.applicationName,
+                        customerName :body.customerName,
+                        installationDate : Date.now(),
+                        installationType : "INSTALL",
+                        isEncrypted : body.toolsList[i].isEncrypted,
+                        toolURL : body.toolsList[i].toolURL ,
+                        ldapName : body.toolsList[i].toolConfigurationList[0].configurationValue,
+                        ldapPort: body.toolsList[i].toolConfigurationList[1].configurationValue,
+                        ldapURL: body.toolsList[i].toolConfigurationList[2].configurationValue,
+                        ldapUserId: body.toolsList[i].toolConfigurationList[3].configurationValue,
+                        ldapPassword: ldapPasswordInput
+                    }
+            if("AWS" !== body.toolsList[i].toolName &&  "Azure" !== body.toolsList[i].toolName  ){
+                console.log(body.toolsList[i].toolName);
+                    
+                    Request.post({
+                        headers: { "content-type": "application/json" },
+                        url: "http://localhost:9091/api/rabbitmq/customerRequestHandler/addToStartInstancesQueue",
+                        body: object,
+                        json: true
+                    }, (error, response, body) => {
+                        if (error) {
+                            console.log("Error occured...!!!");
+                            callback(body, error);
+                        }
+                    //  callback(body, error);
+                    });
+            }else{
+                console.log("AWS / Azure /");
+                saveTool.saveTool(object,function(result, error){
 
-            var object = {
-                toolName : body.toolsList[i].toolName,
-                toolConfigurationList : body.toolsList[i].toolConfigurationList,
-                exposedPort : body.toolsList[i].toolConfigurationList[0].configurationValue,
-                dnsName:"",
-                instanceId:"",
-                toolStatus:"",
-                customerUniqueId:body.customerUniqueId,
-                applicationId:applicationId,
-                toolContainerId:"",
-                bundleToolsSize:body.toolsList.length,
-                applicationName: body.applicationName,
-                customerName :body.customerName,
-                installationDate : Date.now(),
-                installationType : "INSTALL",
-                isEncrypted : body.toolsList[i].isEncrypted,
-                toolURL : body.toolsList[i].toolURL 
+                });
             }
-            Request.post({
-                headers: { "content-type": "application/json" },
-                url: "http://localhost:9091/api/rabbitmq/customerRequestHandler/addToStartInstancesQueue",
-                body: object,
-                json: true
-            }, (error, response, body) => {
-                if (error) {
-                    console.log("Error occured...!!!");
-                    callback(body, error);
-                }
-              //  callback(body, error);
-            });
            
         }
         callback({ 'msg': "Activation request Received..!!!" });
